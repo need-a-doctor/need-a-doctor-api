@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Иванов Иван Иванович",
+    "clinic": "56ed28562ff662e835f65661",
+    "specializations": ["56ed4e339eae7afa3b6987f5"]
+  },
+  {
+    "name": "Петров Петр Петрович",
+    "clinic": "56ed28562ff662e835f65661",
+    "specializations": ["56ed4e339eae7afa3b6987f6", "56ed4e339eae7afa3b6987f7"]
+  },
+  {
+    "name": "Сидоров Владимир Михайлович",
+    "clinic": "56ed28562ff662e835f65661",
+    "specializations": ["56ed4e339eae7afa3b6987f7"]
+  },
+  {
+    "name": "Пушкин Александр Сергеевич",
+    "clinic": "56ed2f8fa49989ea363263df",
+    "specializations": ["56ed4e339eae7afa3b6987f8"]
+  },
+  {
+    "name": "Пасмурнов Сергей Михайлович",
+    "clinic": "56ed2f8fa49989ea363263df",
+    "specializations": ["56ed4e339eae7afa3b6987f9"]
+  }
+]

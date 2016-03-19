@@ -34,7 +34,10 @@ mongoose.connect(config.mongo.uri, config.mongo.options, function (err) {
     }, 1000);
   }
 
+  require('./services/user.seed');
+  require('./services/clinic.seed');
   require('./services/specialization.seed');
+  require('./services/doctor.seed');
   require('./swagger-ui/updateAPIPath');
 
   app.server = require('http').createServer(app);

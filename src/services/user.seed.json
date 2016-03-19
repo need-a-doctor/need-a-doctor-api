@@ -1,0 +1,27 @@
+[
+  {
+    "_id" : "56ed24727552735635062496",
+    "isEmailVerified" : false,
+    "verifyEmailHash" : "efe3d30664352577987167faad7b3aa0",
+    "provider" : "local",
+    "name" : "Anton Shubin",
+    "hashedPassword" : "EgeRqlChOcVlTAGSV4Tr0Dj94iEsZ0U3XBA3phe4wy0Ew0fKYzNvxjhz2PnQ88BDxnOuni+j94unbiUN3TxsBA==",
+    "salt" : "cobmWB1KZNHPElsT7gFHxw==",
+    "createdAt" : "2016-03-19T10:05:38.146+0000",
+    "role" : "clinic-admin",
+    "email" : "antoxas12@gmail.com"
+  },
+  {
+    "_id" : "56ed2f8fa49989ea363263de",
+    "isEmailVerified" : false,
+    "verifyEmailHash" : "030748b55eeda334a48c230a562d3048",
+    "provider" : "local",
+    "name" : "Dmitry",
+    "hashedPassword" : "KyKnfrKaebm2cT0qWujEF7e+8BKEeJhDxbTUXJj6fDXuIXpNw1rnmLiFh/qyKe58Q3mfKWcOHjAdzXfNzuMj1g==",
+    "salt" : "ydmwwRarO6PsAaVn88boHw==",
+    "createdAt" : "2016-03-19T10:53:03.114+0000",
+    "role" : "clinic-admin",
+    "email" : "dimanter@gmail.com",
+    "sex" : "male"
+  }
+]

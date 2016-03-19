@@ -34,8 +34,8 @@ mongoose.connect(config.mongo.uri, config.mongo.options, function (err) {
     }, 1000);
   }
 
-  //require('./services/country.seed');
-  //require('./swagger-ui/updateAPIPath');
+  require('./services/specialization.seed');
+  require('./swagger-ui/updateAPIPath');
 
   app.server = require('http').createServer(app);
   app.server.listen(config.port, config.ip, function () {

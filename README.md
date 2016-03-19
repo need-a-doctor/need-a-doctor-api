@@ -2,7 +2,6 @@
 
 [ ![Codeship Status for need-a-doctor/need-a-doctor-api](https://codeship.com/projects/36a16ac0-cfe6-0133-11f8-52aba3b897dd/status?branch=master)](https://codeship.com/projects/141308)
 
-
 ## Setting up environment
 
 Install node.js and use this commands to install all dependencies:

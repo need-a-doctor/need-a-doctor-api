@@ -12,18 +12,17 @@ var Schema = mongoose.Schema;
  * @property {Array} workerResponses - the responses already submitted so far by the Task's worker see: {@link workerResponseSchema}
  * @property {Date} createdAt
  */
-var ClinicSchema = new Schema({
-  admin: {
-    type: Schema.ObjectId,
-    ref: 'User',
-    required: true
-  },
+var SpecializationSchema = new Schema({
   name: {
     type: String,
     required: true
   },
-  address: {
+  description: {
     type: String,
+    required: true
+  },
+  tags: {
+    type: [String],
     required: true
   },
   createdAt: {
@@ -32,6 +31,6 @@ var ClinicSchema = new Schema({
   }
 });
 
-ClinicSchema.index({name: 1});
+SpecializationSchema.index({name: 1});
 
-module.exports = mongoose.model('Clinic', ClinicSchema);
+module.exports = mongoose.model('Specialization', SpecializationSchema);

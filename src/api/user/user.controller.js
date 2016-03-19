@@ -36,7 +36,12 @@ function create (req, res) {
   var newUser = new User(req.body);
 
   newUser.provider = 'local';
-  newUser.role = 'user';
+  if (req.body.role === 'clinic-admin') {
+    newUser.role = 'clinic-admin';
+  } else {
+    newUser.role = 'user';
+  }
+
   newUser.verifyEmailHash = crypto.randomBytes(16).toString('hex');
   newUser.verifyEmailUrl = urljoin(config.backend.url,
     config.urls.verifyEndpointUrl, newUser.verifyEmailHash);
@@ -45,6 +50,27 @@ function create (req, res) {
   newUser
     .save()
     .then(function (user) {
+      if (user.role === 'clinic-admin') {
+        Clinic
+          .create({
+            admin: user,
+            name: 'Clinic name',
+            address: 'Clinic address'
+          })
+          .then(function (clinic) {
+            Logger.log('UserController::create() - Clinic created for clinic admin', {
+              clinic: clinic
+            });
+          })
+          .catch(function (err) {
+            Logger.error('UserController::create() - Clinic creation failed' +
+              ' for clinic admin',
+              {
+                admin: user,
+                error: err
+              });
+          });
+      }
       var token = authService.signToken(user._id);
 
       res.status(200).json({token: token});
@@ -168,6 +194,9 @@ function me (req, res) {
 function getClinic (req, res) {
   Clinic
     .findOne({admin: req.user._id})
+    .select({
+      admin: 0
+    })
     .lean()
     .then(function (clinic) {
       res.json(clinic);
@@ -187,9 +216,8 @@ function updateClinic (req, res) {
     .then(function (clinic) {
       // We can't allow to set "admin" field for example
       var allowedToEditFields = {
-        name: req.body.name, //TODO: set clinic's fields
-        email: req.body.email,
-        sex: req.body.sex
+        name: req.body.name,
+        address: req.body.address
       };
       _.merge(clinic, allowedToEditFields);
       clinic.save(function (err, savedClinic) {

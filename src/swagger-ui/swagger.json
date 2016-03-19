@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "need-a-doctor.io API",
+    "title": "Need-a-doctor API",
     "version": "0.0.1"
   },
   "host": "localhost:9000",
@@ -55,40 +55,7 @@
         }
       }
     },
-    "/auth/google": {
-      "get": {
-        "summary": "Google OAuth",
-        "tags": [
-          "Auth"
-        ],
-        "responses": {
-          "302": {
-            "description": "Redirect"
-          }
-        }
-      }
-    },
     "/users": {
-      "get": {
-        "summary": "Get list of users (admin)",
-        "tags": [
-          "Users"
-        ],
-        "responses": {
-          "200": {
-            "description": "List of users",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
-            }
-          },
-          "500": {
-            "description": "Error"
-          }
-        }
-      },
       "post": {
         "summary": "Creates a new user",
         "parameters": [
@@ -118,6 +85,12 @@
             "description": "password confirmation",
             "type": "string",
             "format": "password"
+          },
+          {
+            "name": "role",
+            "in": "formData",
+            "description": "(optional) set to \"clinic-admin\" or leave empty",
+            "type": "string"
           }
         ],
         "tags": [
@@ -182,27 +155,9 @@
             "format": "email"
           },
           {
-            "name": "bitcoinAddress",
-            "in": "formData",
-            "description": "user Bitcoin address",
-            "type": "string"
-          },
-          {
-            "name": "yearOfBirth",
-            "in": "formData",
-            "description": "user year of birth",
-            "type": "string"
-          },
-          {
             "name": "sex",
             "in": "formData",
             "description": "user sex",
-            "type": "string"
-          },
-          {
-            "name": "country",
-            "in": "formData",
-            "description": "user name",
             "type": "string"
           }
         ],
@@ -218,58 +173,6 @@
           },
           "403": {
             "description": "Unauthorized"
-          },
-          "500": {
-            "description": "General error"
-          }
-        }
-      }
-    },
-    "/users/me/jobs": {
-      "get": {
-        "summary": "Get list of jobs",
-        "tags": [
-          "Users",
-          "Jobs"
-        ],
-        "responses": {
-          "200": {
-            "description": "List of jobs",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Job"
-              }
-            }
-          },
-          "500": {
-            "description": "General error"
-          }
-        }
-      }
-    },
-    "/users/me/jobs/{jobId}": {
-      "get": {
-        "summary": "Get job",
-        "tags": [
-          "Users",
-          "Jobs"
-        ],
-        "parameters": [
-          {
-            "name": "jobId",
-            "in": "path",
-            "description": "job id",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Single job",
-            "schema": {
-              "$ref": "#/definitions/Job"
-            }
           },
           "500": {
             "description": "General error"
@@ -314,6 +217,64 @@
         }
       }
     },
+    "/users/me/clinic": {
+      "get": {
+        "summary": "Get clinic",
+        "tags": [
+          "Users",
+          "Clinics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Clinic entity",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Clinic"
+              }
+            }
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update clinic",
+        "tags": [
+          "Users",
+          "Clinics"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "clinic name",
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "clinic address",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clinic entity",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Clinic"
+              }
+            }
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      }
+    },
     "/users/verify/{hash}": {
       "get": {
         "summary": "Verifies email for a user",
@@ -345,838 +306,176 @@
         }
       }
     },
-    "/users/me/taxonomies": {
-      "get": {
-        "summary": "Get list of categories for current user",
-        "tags": [
-          "Users",
-          "Taxonomies"
+    "definitions": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "validEmail": {
+            "type": "boolean"
+          },
+          "validationHash": {
+            "type": "string"
+          }
+        }
+      },
+      "Clinic": {
+        "type": "object",
+        "required": [
+          "title",
+          "owner",
+          "workers"
         ],
-        "responses": {
-          "200": {
-            "description": "List of categories",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Taxonomy"
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/definitions/User"
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "taxonomies"
+            ],
+            "properties": {
+              "corpus": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "dataType": {
+                "type": "string"
+              },
+              "taxonomies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Taxonomy"
+                }
               }
             }
           },
-          "500": {
-            "description": "General error"
-          }
-        }
-      }
-    },
-    "/taxonomies": {
-      "post": {
-        "summary": "Create new taxonomy for current user",
-        "parameters": [
-          {
-            "name": "title",
-            "in": "formData",
-            "description": "taxonomy title",
+          "stream": {
             "type": "string"
           },
-          {
-            "name": "categories",
-            "in": "formData",
+          "tasks": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
-          }
-        ],
-        "tags": [
-          "Taxonomies"
-        ],
-        "responses": {
-          "201": {
-            "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/Taxonomy"
-            }
-          },
-          "500": {
-            "description": "General error"
-          }
-        }
-      }
-    },
-    "/jobs": {
-      "post": {
-        "summary": "Creates a new job in the DB",
-        "parameters": [
-          {
-            "name": "job",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/JobParams"
-            }
-          }
-        ],
-        "tags": [
-          "Jobs"
-        ],
-        "responses": {
-          "201": {
-            "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/Job"
-            }
-          },
-          "500": {
-            "description": "General error"
-          }
-        }
-      }
-    },
-    "/tasks": {
-      "get": {
-        "summary": "Get list of tasks",
-        "parameters": [
-          {
-            "name": "stream",
-            "in": "query",
-            "description": "Custom stream name",
-            "type": "string"
-          },
-          {
-            "name": "min",
-            "in": "query",
-            "description": "Min btc amount",
-            "type": "number"
-          },
-          {
-            "name": "max",
-            "in": "query",
-            "description": "Max btc amount",
-            "type": "number"
-          },
-          {
-            "name": "sortBy",
-            "in": "query",
-            "type": "string",
-            "enum": [
-              "amount",
-              "createdAt"
-            ]
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "type": "string",
-            "enum": [
-              "asc",
-              "desc"
-            ]
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "type": "number"
-          }
-        ],
-        "tags": [
-          "Tasks"
-        ],
-        "responses": {
-          "200": {
-            "description": "List of tasks",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "meta": {
-                  "type": "object",
-                  "properties": {
-                    "paging": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "number"
-                        },
-                        "amount": {
-                          "type": "number"
-                        },
-                        "offset": {
-                          "type": "number"
-                        }
-                      }
-                    },
-                    "filter": {
-                      "type": "object"
-                    }
-                  }
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Task"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Error"
-          }
-        }
-      }
-    },
-    "/tasks/{id}": {
-      "get": {
-        "summary": "Get a single task",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Task id",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Tasks"
-        ],
-        "responses": {
-          "200": {
-            "description": "Task",
-            "schema": {
               "$ref": "#/definitions/Task"
             }
           },
-          "404": {
-            "description": "Task not found"
-          }
-        }
-      }
-    },
-    "/tasks/{id}/work": {
-      "get": {
-        "summary": "Get a single task for worker who is working on it",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Task id",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Tasks"
-        ],
-        "responses": {
-          "200": {
-            "description": "Task",
-            "schema": {
-              "$ref": "#/definitions/Task"
-            }
+          "workers": {
+            "type": "number"
           },
-          "404": {
-            "description": "Task not found"
-          }
-        }
-      }
-    },
-    "/worker-responses": {
-      "get": {
-        "summary": "Get list of workerResponses",
-        "parameters": [
-          {
-            "name": "taskId",
-            "in": "query",
-            "type": "string"
+          "amount": {
+            "type": "number"
           },
-          {
-            "name": "userId",
-            "in": "query",
-            "type": "string"
+          "payment": {
+            "$ref": "#/definitions/Payment"
           },
-          {
-            "name": "owner",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "populateTasks",
-            "in": "query",
+          "manualApproval": {
             "type": "boolean"
-          }
-        ],
-        "tags": [
-          "WorkerResponses"
-        ],
-        "responses": {
-          "200": {
-            "description": "WorkerResponses",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/WorkerResponse"
-              }
-            }
           },
-          "400": {
-            "description": "Error"
-          },
-          "403": {
-            "description": "Unauthorized"
-          }
-        }
-      },
-      "post": {
-        "summary": "Creates a new workerResponse for a Task",
-        "parameters": [
-          {
-            "name": "task",
-            "in": "formData",
+          "createdAt": {
             "type": "string",
-            "description": "Task id"
-          }
-        ],
-        "tags": [
-          "WorkerResponses"
-        ],
-        "responses": {
-          "201": {
-            "description": "Created",
-            "schema": {
-              "$ref": "#/definitions/WorkerResponse"
-            }
+            "format": "date"
           },
-          "400": {
-            "description": "Error"
-          },
-          "404": {
-            "description": "Job not found"
-          },
-          "422": {
-            "description": "Task already has enough workers"
-          }
-        }
-      }
-    },
-    "/worker-responses/{id}": {
-      "put": {
-        "summary": "Updates an existing task in the DB",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "WorkerResponse id",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "workerResponse",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/WorkerResponseParams"
-            }
-          }
-        ],
-        "tags": [
-          "WorkerResponses"
-        ],
-        "responses": {
-          "200": {
-            "description": "WorkerResponse",
-            "schema": {
-              "$ref": "#/definitions/WorkerResponse"
-            }
-          },
-          "400": {
-            "description": "Answers already submitted"
-          },
-          "403": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "WorkerResponse not found"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Deletes a workerResponse from the DB",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "WorkerResponse id",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "WorkerResponses"
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Error"
-          },
-          "403": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Answers already submitted"
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "User": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "provider": {
-          "type": "string"
-        },
-        "country": {
-          "type": "string"
-        },
-        "age": {
-          "type": "number"
-        },
-        "sex": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "validEmail": {
-          "type": "boolean"
-        },
-        "validationHash": {
-          "type": "string"
-        }
-      }
-    },
-    "Job": {
-      "type": "object",
-      "required": [
-        "title",
-        "owner",
-        "workers"
-      ],
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "owner": {
-          "$ref": "#/definitions/User"
-        },
-        "input": {
-          "type": "object",
-          "required": [
-            "taxonomies"
-          ],
-          "properties": {
-            "corpus": {
-              "type": "array",
-              "items": {
+          "publication": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "startedAt": {
                 "type": "string"
               }
-            },
-            "dataType": {
-              "type": "string"
-            },
-            "taxonomies": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Taxonomy"
-              }
             }
-          }
-        },
-        "stream": {
-          "type": "string"
-        },
-        "tasks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Task"
-          }
-        },
-        "workers": {
-          "type": "number"
-        },
-        "amount": {
-          "type": "number"
-        },
-        "payment": {
-          "$ref": "#/definitions/Payment"
-        },
-        "manualApproval": {
-          "type": "boolean"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date"
-        },
-        "publication": {
-          "type": "object",
-          "required": [
-            "status"
-          ],
-          "properties": {
-            "status": {
-              "type": "string"
-            },
-            "startedAt": {
-              "type": "string"
-            }
-          }
-        },
-        "completedAt": {
-          "type": "string"
-        }
-      }
-    },
-    "Taxonomy": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "categories": {
-          "type": "array",
-          "items": {
+          },
+          "completedAt": {
             "type": "string"
           }
-        },
-        "owner": {
-          "$ref": "#/definitions/User"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date"
         }
-      }
-    },
-    "Task": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string"
-        },
-        "job": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "owner": {
-              "type": "object",
-              "properties": {
-                "_id": {
-                  "type": "string"
-                },
-                "name": {
+      },
+      "ClinicParams": {
+        "type": "object",
+        "required": [
+          "title",
+          "stream",
+          "amountByPhrase",
+          "workers"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "stream": {
+            "type": "string"
+          },
+          "amountByPhrase": {
+            "type": "number",
+            "default": 0.0001
+          },
+          "workers": {
+            "type": "number",
+            "default": 1
+          },
+          "manualApproval": {
+            "type": "boolean",
+            "default": true
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "corpus",
+              "taxonomies",
+              "dataType"
+            ],
+            "properties": {
+              "corpus": {
+                "type": "array",
+                "items": {
                   "type": "string"
                 }
+              },
+              "taxonomies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "dataType": {
+                "type": "string",
+                "default": "news"
               }
             }
-          }
-        },
-        "amount": {
-          "type": "number"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date"
-        },
-        "completedAt": {
-          "type": "string",
-          "format": "date"
-        },
-        "categoriesSize": {
-          "type": "number"
-        },
-        "corpusSize": {
-          "type": "number"
-        },
-        "workersPlacesLeft": {
-          "type": "number"
-        }
-      }
-    },
-    "Payment": {
-      "type": "object",
-      "required": [
-        "amount",
-        "type"
-      ],
-      "properties": {
-        "address": {
-          "type": "string"
-        },
-        "amount": {
-          "type": "number"
-        },
-        "total": {
-          "type": "number",
-          "default": 0
-        },
-        "confidence": {
-          "type": "number"
-        },
-        "exchange": {
-          "type": "string"
-        },
-        "payee": {
-          "type": "string"
-        },
-        "payer": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "job",
-            "payment to worker",
-            "refund",
-            "profit share",
-            "other"
-          ]
-        },
-        "status": {
-          "type": "string",
-          "default": "new",
-          "enum": [
-            "new",
-            "pending",
-            "skip",
-            "queued",
-            "completed",
-            "failed"
-          ]
-        },
-        "paymentUrl": {
-          "type": "string"
-        },
-        "qr": {
-          "type": "string"
-        },
-        "refnum": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string"
-        },
-        "completedAt": {
-          "type": "string"
-        }
-      }
-    },
-    "WorkerResponse": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string"
-        },
-        "paymentOption": {
-          "type": "string"
-        },
-        "answers": {
-          "type": "object",
-          "properties": {
-            "time": {
-              "type": "number"
-            },
-            "category": {
-              "type": "string"
-            },
-            "phrase": {
-              "type": "string"
-            }
-          }
-        },
-        "worker": {
-          "type": "string"
-        },
-        "task": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string"
-            },
-            "job": {
-              "type": "string"
-            },
-            "amount": {
-              "type": "number"
-            },
-            "createdAt": {
-              "type": "string",
-              "format": "number"
-            },
-            "corpus": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "timingStatistics": {
-          "type": "object",
-          "properties": {
-            "total": {
-              "type": "number"
-            },
-            "min": {
-              "type": "number"
-            },
-            "average": {
-              "type": "number"
-            },
-            "max": {
-              "type": "number"
-            },
-            "searches": {
-              "type": "number"
-            }
-          }
-        },
-        "completedAt": {
-          "type": "string",
-          "format": "date"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date"
-        }
-      }
-    },
-    "JobParams": {
-      "type": "object",
-      "required": [
-        "title",
-        "stream",
-        "amountByPhrase",
-        "workers"
-      ],
-      "properties": {
-        "title": {
-          "type": "string"
-        },
-        "stream": {
-          "type": "string"
-        },
-        "amountByPhrase": {
-          "type": "number",
-          "default": 0.0001
-        },
-        "workers": {
-          "type": "number",
-          "default": 1
-        },
-        "manualApproval": {
-          "type": "boolean",
-          "default": true
-        },
-        "input": {
-          "type": "object",
-          "required": [
-            "corpus",
-            "taxonomies",
-            "dataType"
-          ],
-          "properties": {
-            "corpus": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "taxonomies": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "dataType": {
-              "type": "string",
-              "default": "news"
-            }
-          }
-        },
-        "publication": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "string",
-              "default": "published"
-            }
-          }
-        }
-      }
-    },
-    "WorkerResponseParams": {
-      "type": "object",
-      "properties": {
-        "createdAt": {
-          "type": "string",
-          "format": "date"
-        },
-        "paymentAddress": {
-          "type": "string"
-        },
-        "paymentOption": {
-          "type": "string"
-        },
-        "task": {
-          "type": "string"
-        },
-        "worker": {
-          "type": "string"
-        },
-        "timingStatistics": {
-          "type": "object",
-          "properties": {
-            "searches": {
-              "type": "number"
-            },
-            "min": {
-              "type": "number"
-            },
-            "average": {
-              "type": "number"
-            },
-            "max": {
-              "type": "number"
-            },
-            "total": {
-              "type": "number"
-            }
-          }
-        },
-        "answers": {
-          "type": "array",
-          "items": {
+          },
+          "publication": {
             "type": "object",
             "properties": {
-              "phrase": {
-                "type": "string"
-              },
-              "category": {
-                "type": "string"
-              },
-              "time": {
-                "type": "number"
+              "status": {
+                "type": "string",
+                "default": "published"
               }
             }
           }

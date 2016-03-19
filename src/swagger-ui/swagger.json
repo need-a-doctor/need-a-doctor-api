@@ -333,6 +333,141 @@
         }
       }
     },
+    "/doctors": {
+      "get": {
+        "summary": "Returns a list of doctors",
+        "tags": [
+          "Doctors"
+        ],
+        "responses": {
+          "200": {
+            "description": "Token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      }
+    },
+    "/doctors/{id}": {
+      "get": {
+        "summary": "Returns a list of doctors",
+        "tags": [
+          "Doctors"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "doctor id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      }
+    },
+    "/doctors/by-specialization/{id}": {
+      "get": {
+        "summary": "Returns a list of doctors of specialization",
+        "tags": [
+          "Doctors"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specialization id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      }
+    },
+    "/doctors/by-clinic/{id}": {
+      "get": {
+        "summary": "Returns a list of doctors of clinic",
+        "tags": [
+          "Doctors"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "clinic id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      }
+    },
     "definitions": {
       "User": {
         "type": "object",

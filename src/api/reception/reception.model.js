@@ -11,17 +11,19 @@ var Schema = mongoose.Schema;
 var ReceptionSchema = new Schema({
   time: Date,
   user: {
-    type: String,
+    type: Schema.ObjectId,
     lowercase: true,
     required: true
   },
   schedule: {
-    type: String,
-    required: true
+    type: Schema.ObjectId,
+    required: true,
+    ref: 'Schedule'
   },
   doctor: {
-    type: String,
-    required: true
+    type: Schema.ObjectId,
+    required: true,
+    ref: 'Doctor'
   },
   createdAt: {
     type: Date,

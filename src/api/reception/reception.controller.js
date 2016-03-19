@@ -12,46 +12,36 @@ var controller = {
   index: index,
   detail: detail,
   createReception: createReception,
-  deleteReception: deleteReception,
-  updateReception: updateReseption
+  deleteReception: deleteReception
 };
 
 module.exports = controller;
 
 function index (req, res) {
-  var start = new Date().getTime();
+  Logger.debug('ReceptionController::index() - timing', {
+    offset: req.query.offset
+  });
   Reception
     .find({user: req.user._id})
     .skip(req.query.offset)
-    .limit(req.query.max)
+    .limit(10)
     .sort('name')
     .then(function (receptions) {
       res.json(_getFilteredAndLimitedReception(req, receptions));
     })
     .catch(function (err) {
-      res.status(400).send(err);
-    })
-    .finally(function () {
-      Logger.debug('ReceptionController::index() - timing', {
-        time: new Date().getTime() - start
-      });
+      handleError(res, err);
     });
 }
 
 function detail (req, res) {
-  var start = new Date().getTime();
   Reception
     .findOne({id: req.query.receptionId})
     .then(function (reception) {
       res.json(reception);
     })
     .catch(function (err) {
-      res.status(400).send(err);
-    })
-    .finally(function () {
-      Logger.debug('ReceptionController::index() - timing', {
-        time: new Date().getTime() - start
-      });
+      handleError(res, err);
     });
 }
 
@@ -64,7 +54,7 @@ function createReception (req, res) {
   });
   reception.save(function (err) {
     if (err) {
-      return res.status(500).send('Uoops! ' + err);
+      return handleError(res, err);
     }
     // saved!
     return res.status(200).send();
@@ -74,15 +64,11 @@ function createReception (req, res) {
 function deleteReception (req, res) {
   Reception.remove({id: req.query.reseptionId}, function (err) {
     if (err) {
-      return res.status(500).send('Uoops! ' + err);
+      return handleError(res, err);
     }
     // removed!
     return res.status(200).send();
   });
-}
-
-function updateReseption (req, res) {
-  return res.status(200).send();
 }
 
 
@@ -92,8 +78,8 @@ function _getFilteredAndLimitedReception (req, receptions) {
   filteredReception = receptions;
 
   var offset = parseInt(req.query.offset) || 0;
-  var limit = 10;
-  filteredReception = filteredReception.slice(offset, offset + limit);
+  //var limit = 10;
+  //filteredReception = filteredReception.slice(offset, offset + limit);
 
   return {
     meta: {
@@ -101,13 +87,12 @@ function _getFilteredAndLimitedReception (req, receptions) {
         total: filteredReception.length,
         amount: filteredReception.length,
         offset: offset
-      },
-      filter: {
-        stream: req.query.stream,
-        min: req.query.min,
-        max: req.query.max
       }
     },
     data: filteredReception
   };
+}
+
+function handleError (res, err) {
+  return res.status(400).send(err);
 }

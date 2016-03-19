@@ -19,11 +19,10 @@ router.get('/me/clinic/doctors/:id', auth.isAuthenticated(), controller.getDocto
 router.put('/me/clinic/doctors/:id', auth.isAuthenticated(), controller.updateDoctor);
 router.delete('/me/clinic/doctors/:id', auth.isAuthenticated(), controller.deleteDoctor);
 
-router.get('/me/clinic/reception', auth.isAuthenticated(), receptionController.index);
-router.get('/me/clinic/reception/:receptionId', auth.isAuthenticated(), receptionController.detail);
-router.post('/me/clinic/reception', auth.isAuthenticated(), receptionController.createReception);
-router.delete('/me/clinic/reception/:receptionId', auth.isAuthenticated(), receptionController.deleteReception);
-router.put('/me/clinic/reception/:receptionId', auth.isAuthenticated(), receptionController.updateReception);
+router.get('/me/reception', auth.isAuthenticated(), receptionController.index);
+router.get('/me/reception/:receptionId', auth.isAuthenticated(), receptionController.detail);
+router.post('/me/reception', auth.isAuthenticated(), receptionController.createReception);
+router.delete('/me/reception/:receptionId', auth.isAuthenticated(), receptionController.deleteReception);
 
 // don't forget to change `config.urls.verifyEndpointUrl` together with route
 // src/config/environment/index.js

@@ -5,7 +5,6 @@
 
 //var _ = require('lodash');
 
-var Logger = require('../../services/logger.service');
 var Reception = require('./reception.model');
 
 var controller = {
@@ -18,9 +17,6 @@ var controller = {
 module.exports = controller;
 
 function index (req, res) {
-  Logger.debug('ReceptionController::index() - timing', {
-    offset: req.query.offset
-  });
   Reception
     .find({user: req.user._id})
     .skip(req.query.offset)

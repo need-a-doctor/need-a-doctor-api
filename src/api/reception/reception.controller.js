@@ -77,16 +77,12 @@ function _getFilteredAndLimitedReception (req, receptions) {
 
   filteredReception = receptions;
 
-  var offset = parseInt(req.query.offset) || 0;
-  //var limit = 10;
-  //filteredReception = filteredReception.slice(offset, offset + limit);
-
   return {
     meta: {
       paging: {
         total: filteredReception.length,
         amount: filteredReception.length,
-        offset: offset
+        offset: parseInt(req.query.offset) || 0
       }
     },
     data: filteredReception

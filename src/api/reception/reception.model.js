@@ -12,18 +12,18 @@ var ReceptionSchema = new Schema({
   time: Date,
   user: {
     type: Schema.ObjectId,
-    lowercase: true,
+    ref: 'User',
     required: true
   },
-  schedule: {
-    type: Schema.ObjectId,
-    required: true,
-    ref: 'Schedule'
-  },
+  //schedule: {
+  //  type: Schema.ObjectId,
+  //  ref: 'Schedule',
+  //  required: true
+  //},
   doctor: {
     type: Schema.ObjectId,
-    required: true,
-    ref: 'Doctor'
+    ref: 'Doctor',
+    required: true
   },
   createdAt: {
     type: Date,

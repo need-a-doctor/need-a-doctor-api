@@ -1,0 +1,26 @@
+
+{
+	"source": {
+    "include": [
+        "./src/api/job/job.controller.js",
+        "./src/api/job/job.model.js",
+        "./src/api/task/task.controller.js",
+        "./src/api/task/task.model.js",
+        "./src/api/workerResponse/workerResponse.controller.js",
+        "./src/api/workerResponse/workerResponse.model.js",
+        "./src/api/user/user.controller.js",
+        "./src/api/user/user.model.js",
+        "./src/api/payment/payment.controller.js",
+        "./src/api/payment/payment.model.js",
+        "./src/api/taxonomy/taxonomy.model.js",
+        "./src/api/services/coinkite.service.js",
+        "./src/api/services/email.service.js",
+        "./src/api/services/pubnub.service.js",
+        "./src/api/services/watson.service.js",
+    	"./src/config/environment/index.js"
+    ],
+    "exclude": [ /* array of paths to exclude */ ],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+	}
+}

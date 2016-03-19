@@ -1,0 +1,56 @@
+{
+  "name": "need-a-doctor-api",
+  "version": "0.0.1",
+  "main": "src/app.js",
+  "description": "Need-a-doctor REST API",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:need-a-doctor/need-a-doctor-api.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.0.0",
+    "body-parser": "^1.14.1",
+    "composable-middleware": "^0.3.0",
+    "compression": "^1.6.0",
+    "cors": "^2.7.1",
+    "errorhandler": "^1.4.2",
+    "express": "^4.13.3",
+    "express-jwt": "^3.3.0",
+    "guppy-cli": "^0.4.0",
+    "jsonwebtoken": "^5.5.4",
+    "lodash": "^3.10.1",
+    "method-override": "^2.3.5",
+    "moment": "^2.10.3",
+    "mongoose": "^4.4.4",
+    "morgan": "^1.6.1",
+    "nock": "^7.2.2",
+    "node-notifier": "^4.4.0",
+    "passport": "^0.3.2",
+    "passport-google-oauth": "^0.2.0",
+    "passport-local": "^1.0.0",
+    "q": "^1.4.1",
+    "raven": "^0.10.0",
+    "superagent": "^1.5.0",
+    "url-join": "0.0.1"
+  },
+  "devDependencies": {
+    "colors": "^1.1.2",
+    "git-guppy": "^1.1.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^1.1.1",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-nodemon": "^2.0.6",
+    "gulp-spawn-mocha": "^2.2.2",
+    "gulp-watch": "^4.3.5",
+    "should": "^7.1.1",
+    "supertest": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=5.1.0"
+  },
+  "scripts": {
+    "postinstall": "guppy pre-commit"
+  }
+}

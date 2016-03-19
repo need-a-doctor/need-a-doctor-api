@@ -3,8 +3,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-//var Specialization = require('../specialization/specialization.model');
-
 /**
  * @constructor
  * @property {Array} corpus - an array of phrases to be classified by the worker
@@ -21,7 +19,7 @@ var DoctorSchema = new Schema({
     required: true
   },
   clinic: {
-    type: Schema.ObjectId,
+    type: String,
     ref: 'Clinic',
     required: true
   },

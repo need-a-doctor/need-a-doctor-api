@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var Logger = require('./logger.service');
 var User = require('../api/user/user.model');
 
@@ -33,15 +34,23 @@ function init () {
 function _recreateUsers () {
   var userSeed = require('./user.seed.json');
 
-  User.collection.insert(userSeed, function (err, users) {
-    if (err) {
-      return Logger.error('Insert users error', {
-        error: err
-      });
-    }
+  async.each(userSeed,
+    function (user, cb) {
+      new User(user)
+        .save()
+        .then(function () {
+          cb();
+        })
+        .catch(cb);
+    },
+    function (err) {
+      if (err) {
+        return Logger.error('Insert users error', {
+          error: err
+        });
+      }
 
-    Logger.log('Users created', {
-      amount: users.result.n
-    });
-  });
+      Logger.log('Users created');
+    }
+  );
 }

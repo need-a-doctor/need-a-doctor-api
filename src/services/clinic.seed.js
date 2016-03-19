@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var Logger = require('./logger.service');
 var Clinic = require('../api/clinic/clinic.model');
 
@@ -32,16 +33,23 @@ function init () {
 
 function _recreateClinics () {
   var clinicsSeed = require('./clinic.seed.json');
+  async.each(clinicsSeed,
+    function (clinic, cb) {
+      new Clinic(clinic)
+        .save()
+        .then(function () {
+          cb();
+        })
+        .catch(cb);
+    },
+    function (err) {
+      if (err) {
+        return Logger.error('Insert clinics error', {
+          error: err
+        });
+      }
 
-  Clinic.collection.insert(clinicsSeed, function (err, clinics) {
-    if (err) {
-      return Logger.error('Insert clinics error', {
-        error: err
-      });
+      Logger.log('Clinics created');
     }
-
-    Logger.log('Clinics created', {
-      amount: clinics.result.n
-    });
-  });
+  );
 }

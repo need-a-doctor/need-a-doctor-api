@@ -48,7 +48,7 @@ function index (req, res) {
     .sort({
       name: 1
     })
-    //.populate('specializations') //TODO: this shit doesn't work. Why?
+    .populate('specializations')
     .lean()
     .then(function (doctors) {
       res.json(doctors);
@@ -72,6 +72,7 @@ function detail (req, res) {
     .findOne({
       _id: req.params.id
     })
+    .populate('specializations')
     .lean()
     .then(function (doctor) {
       res.json(doctor);
@@ -92,7 +93,7 @@ function getBySpecialization (req, res) {
     .sort({
       name: 1
     })
-    //.populate('specializations') //TODO: this shit doesn't work. Why?
+    .populate('specializations')
     .lean()
     .then(function (doctors) {
       res.json(doctors);
@@ -111,7 +112,7 @@ function getByClinic (req, res) {
   Doctor
     .find(params)
     .sort({name: 1})
-    //.populate('specializations') //TODO: this shit doesn't work. Why?
+    .populate('specializations')
     .lean()
     .then(function (doctors) {
       res.json(doctors);

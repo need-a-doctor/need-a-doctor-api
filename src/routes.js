@@ -9,7 +9,8 @@ var express = require('express');
 module.exports = function (app) {
   app.use('/api/auth', require('./auth'));
   app.use('/api/users', require('./api/user'));
-  //app.use('/api/clinics', require('./api/clinics'));
+  //app.use('/api/clinics', require('./api/clinic'));
+  app.use('/api/specializations', require('./api/specialization'));
 
   app.use('/', express.static(__dirname + '/swagger-ui'));
 

@@ -306,6 +306,33 @@
         }
       }
     },
+    "/specializations": {
+      "get": {
+        "summary": "Returns a list of doctor specializations",
+        "tags": [
+          "Specializations"
+        ],
+        "responses": {
+          "200": {
+            "description": "Token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "General error"
+          }
+        }
+      }
+    },
     "definitions": {
       "User": {
         "type": "object",

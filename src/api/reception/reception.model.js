@@ -9,11 +9,24 @@ var Schema = mongoose.Schema;
 
 
 var ReceptionSchema = new Schema({
-  id: Number,
   time: Date,
-  user: Number,
-  schedule: Number,
-  doctor: Number
+  user: {
+    type: String,
+    lowercase: true,
+    required: true
+  },
+  schedule: {
+    type: String,
+    required: true
+  },
+  doctor: {
+    type: String,
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('Reception', ReceptionSchema);

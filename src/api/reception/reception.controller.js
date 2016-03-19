@@ -13,7 +13,7 @@ var controller = {
   detail: detail,
   createReception: createReception,
   deleteReception: deleteReception,
-  updateReseption: updateReseption
+  updateReception: updateReseption
 };
 
 module.exports = controller;
@@ -21,7 +21,7 @@ module.exports = controller;
 function index (req, res) {
   var start = new Date().getTime();
   Reception
-    .find({user: req.user})
+    .find({user: req.user._id})
     .skip(req.query.offset)
     .limit(req.query.max)
     .sort('name')
@@ -58,14 +58,16 @@ function detail (req, res) {
 function createReception (req, res) {
   var reception = new Reception({
     time: req.body.time,
-    user: req.user
+    user: req.user._id,
+    schedule: req.body.schedule,
+    doctor: req.body.doctor
   });
   reception.save(function (err) {
     if (err) {
       return res.status(500).send('Uoops! ' + err);
     }
     // saved!
-    return res.status(200);
+    return res.status(200).send();
   });
 }
 
@@ -75,12 +77,12 @@ function deleteReception (req, res) {
       return res.status(500).send('Uoops! ' + err);
     }
     // removed!
-    return res.status(200);
+    return res.status(200).send();
   });
 }
 
 function updateReseption (req, res) {
-  return res.status(200);
+  return res.status(200).send();
 }
 
 

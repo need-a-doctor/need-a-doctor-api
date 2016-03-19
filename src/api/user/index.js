@@ -2,6 +2,7 @@
 
 var express = require('express');
 var controller = require('./user.controller.js');
+var receptionController = require('../reception/reception.controller.js');
 var auth = require('../../auth/auth.service');
 
 var router = express.Router();
@@ -17,6 +18,12 @@ router.get('/me/clinic/doctors', auth.isAuthenticated(), controller.getDoctors);
 router.get('/me/clinic/doctors/:id', auth.isAuthenticated(), controller.getDoctor);
 router.put('/me/clinic/doctors/:id', auth.isAuthenticated(), controller.updateDoctor);
 router.delete('/me/clinic/doctors/:id', auth.isAuthenticated(), controller.deleteDoctor);
+
+router.get('/me/clinic/reception', auth.isAuthenticated(), receptionController.index);
+router.get('/me/clinic/reception/:receptionId', auth.isAuthenticated(), receptionController.detail);
+router.post('/me/clinic/reception', auth.isAuthenticated(), receptionController.createReception);
+router.delete('/me/clinic/reception/:receptionId', auth.isAuthenticated(), receptionController.deleteReception);
+router.put('/me/clinic/reception/:receptionId', auth.isAuthenticated(), receptionController.updateReception);
 
 // don't forget to change `config.urls.verifyEndpointUrl` together with route
 // src/config/environment/index.js

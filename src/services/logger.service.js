@@ -62,6 +62,7 @@ function _captureMessage (level, message, params) {
     case 'test':
       return;
     case 'rc':
+    case 'production':
       _logToConsole(level, message, params);
       client.captureMessage(message, {
         extra: params,

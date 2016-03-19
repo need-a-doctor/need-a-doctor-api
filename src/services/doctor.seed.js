@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var Logger = require('./logger.service');
 var Doctor = require('../api/doctor/doctor.model');
 
@@ -33,15 +34,23 @@ function init () {
 function _recreateDoctors () {
   var doctorsSeed = require('./doctor.seed.json');
 
-  Doctor.collection.insert(doctorsSeed, function (err, doctors) {
-    if (err) {
-      return Logger.error('Insert doctors error', {
-        error: err
-      });
-    }
+  async.each(doctorsSeed,
+    function (doctor, cb) {
+      new Doctor(doctor)
+        .save()
+        .then(function () {
+          cb();
+        })
+        .catch(cb);
+    },
+    function (err) {
+      if (err) {
+        return Logger.error('Insert doctors error', {
+          error: err
+        });
+      }
 
-    Logger.log('Doctors created', {
-      amount: doctors.result.n
-    });
-  });
+      Logger.log('Doctors created');
+    }
+  );
 }

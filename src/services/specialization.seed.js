@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var Logger = require('./logger.service');
 var Specialization = require('../api/specialization/specialization.model');
 
@@ -33,15 +34,23 @@ function init () {
 function _recreateSpecializations () {
   var specializationsSeed = require('./specialization.seed.json');
 
-  Specialization.collection.insert(specializationsSeed, function (err, specializations) {
-    if (err) {
-      return Logger.error('Insert specializations error', {
-        error: err
-      });
-    }
+  async.each(specializationsSeed,
+    function (specialization, cb) {
+      new Specialization(specialization)
+        .save()
+        .then(function () {
+          cb();
+        })
+        .catch(cb);
+    },
+    function (err) {
+      if (err) {
+        return Logger.error('Insert specializations error', {
+          error: err
+        });
+      }
 
-    Logger.log('Specializations created', {
-      amount: specializations.result.n
-    });
-  });
+      Logger.log('Specializations created');
+    }
+  );
 }

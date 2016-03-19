@@ -40,7 +40,7 @@ module.exports = function (app) {
 };
 
 function errorNotification (err, str, req) {
-  var title = `Error in ${req.method} ${req.url}`;
+  var title = 'Error in' + req.method + " " + req.url;
 
   Logger.error(title, str);
 

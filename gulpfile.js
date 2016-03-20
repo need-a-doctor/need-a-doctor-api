@@ -26,9 +26,9 @@ gulp.task('lint', function () {
       '!src/config/**',
       '!src/swagger-ui/**'
     ])
-    //.pipe($.eslint())
-    //.pipe($.eslint.format())
-    //.pipe($.eslint.failAfterError());
+    .pipe($.eslint())
+    .pipe($.eslint.format())
+    .pipe($.eslint.failAfterError());
 });
 
 gulp.task('mocha', function () {
@@ -45,7 +45,7 @@ gulp.task('test', ['mocha'], function () {
   }
 });
 
-gulp.task('pre-commit', /*['lint'],*/ function () {
+gulp.task('pre-commit', ['lint'], function () {
   return _launchMocha('src/**/*.spec.js', false, 'progress', true);
 });
 

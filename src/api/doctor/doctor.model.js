@@ -25,8 +25,11 @@ var DoctorSchema = new Schema({
   },
   specializations: [{
     type: Schema.Types.ObjectId,
-    ref: 'Specialization',
-    required: true
+    ref: 'Specialization'
+  }],
+  receptions: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Reception'
   }],
   createdAt: {
     type: Date,

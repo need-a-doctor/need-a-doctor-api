@@ -6,6 +6,7 @@
 //var _ = require('lodash');
 
 var Reception = require('./reception.model');
+var Doctor = require('./../doctor/doctor.model');
 
 var controller = {
   index: index,
@@ -44,16 +45,31 @@ function detail (req, res) {
 function createReception (req, res) {
   var reception = new Reception({
     time: req.body.time,
+    date: req.body.date,
     user: req.user._id,
     schedule: req.body.schedule,
     doctor: req.body.doctor
   });
-  reception.save(function (err) {
+
+  reception.save(function (err, receptionNew) {
     if (err) {
       return handleError(res, err);
     }
-    // saved!
-    return res.status(200).send();
+    Doctor
+      .findOne(req.body.doctor)
+      .populate('receptions')
+      .then(function (doctor) {
+        doctor.receptions.push(receptionNew._id);
+        doctor.save(function (errD) {
+          if (errD) {
+            return handleError(res, errD);
+          }
+          return res.status(200).send();
+        });
+      })
+      .catch(function (errDoc) {
+        handleError(res, errDoc);
+      });
   });
 }
 

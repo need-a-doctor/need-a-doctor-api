@@ -1,13 +1,16 @@
 'use strict';
 
+var _ = require('lodash');
 var Logger = require('../../services/logger.service');
 var Doctor = require('./doctor.model');
+var moment = require('moment');
 
 var controller = {
   index: index,
   detail: detail,
   getBySpecialization: getBySpecialization,
-  getByClinic: getByClinic
+  getByClinic: getByClinic,
+  getGroupedByDate: getGroupedByDate
 };
 
 module.exports = controller;
@@ -123,4 +126,99 @@ function getByClinic (req, res) {
       });
       res.status(500).send();
     });
+}
+
+function getGroupedByDate (req, res) {
+  var startDate = new Date();
+  var endDate = new Date();
+  endDate.setTime(startDate.getTime() + 10 * 1000 * 60 * 60 * 24);
+
+  /*var response = [{
+    date:"2016-03-20T12:34:06.603Z",//date without time
+    //doctor
+    doctors: {
+      name:"", //string
+      specializations:[""],
+      clinics:{
+         name: String,
+         address: String
+      },
+      receptions:[{
+        time:"",//datetime
+        isBusy:"", //boolean
+        isCurrentUser:"" //boolean
+      }]
+    }
+  }];*/
+
+  Doctor
+    .find()
+    .sort({name: 1})
+    .populate('clinic')
+    .populate('specializations')
+    .populate('receptions')
+    .populate('receptions')
+    .populate({
+      path: 'receptions',
+      match: {
+          date: {
+            '$gte': startDate,
+            '$lt': endDate
+          }
+        }
+    })
+    .lean()
+    .then(function (doctors) {
+      var response = [];
+
+      for (var d = new Date(startDate.getTime()); d <= endDate; d.setTime(d.getTime() + 1000 * 60 * 60 * 24)) {
+        var entity = {
+          date: startDate,
+          doctors: _getFilteredDoctor(req, doctors)
+        };
+        response.push(entity);
+      }
+      res.json(response);
+    })
+    .catch(function (err) {
+      Logger.error('DoctorController::getGroupedByDate() - get list failed', {
+        error: err
+      });
+      res.status(500).send();
+    });
+
+}
+
+function _getFilteredDoctor(req, doctors) {
+
+  return _(doctors)
+    .forEach(function(doctor) {
+
+      var receptions = [];
+      for (var i = 9 ; i <= 18; i = i + 2) {
+
+        var startTime = moment(i + ':00', 'HH:mm');
+        var endTime = moment(i + 2 + ':00', 'HH:mm');
+        var reception = _.find(doctor.receptions, function(o) {
+          return moment(o.time, 'HH:mm').isBetween(startTime, endTime);
+        });
+
+        if (reception && reception.length() > 0) {
+          receptions.push({
+            _id: reception._id,
+            time: startTime,
+            isBusy: true,
+            isCurrentUser: req.user._id == reception.user
+          });
+        } else {
+          receptions.push({
+            time: startTime,
+            isBusy: false,
+            isCurrentUser: false
+          });
+        }
+      }
+      doctor.receptions = receptions;
+    })
+    .value()
 }

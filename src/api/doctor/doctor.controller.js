@@ -205,8 +205,8 @@ function _getResponceForDoctorSchedule (req, res, doctors) {
 
   for (var d = new Date(startDate.getTime()); d <= endDate; d.setTime(d.getTime() + 1000 * 60 * 60 * 24)) {
     var entity = {
-      date: startDate,
-      doctors: _getFilteredDoctor(req, doctors, d)
+      date: d,
+      doctors: _getFilteredDoctor(doctors, d)
     };
     response.push(entity);
   }
@@ -234,7 +234,7 @@ function _createReceptionsForDoctor (doctor, date) {
       //});
     } else {
       receptions.push({
-        time: startTime,
+        time: startTime.toDate(),
         isBusy: false,
         isCurrentUser: false
       });

@@ -102,6 +102,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "string"
+                },
                 "token": {
                   "type": "string"
                 }

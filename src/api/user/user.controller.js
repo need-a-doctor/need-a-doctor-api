@@ -73,7 +73,10 @@ function create (req, res) {
       }
       var token = authService.signToken(user._id);
 
-      res.status(200).json({token: token});
+      res.status(200).json({
+        id: user._id,
+        token: token
+      });
     })
     .catch(function (err) {
       if (err.errors.email &&

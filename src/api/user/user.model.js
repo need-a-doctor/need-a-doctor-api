@@ -24,6 +24,11 @@ var UserSchema = new Schema({
     lowercase: true,
     default: ''
   },
+  //phone: {
+  //  type: String,
+  //  default: '',
+  //  required: true
+  //},
   sex: {
     type: String,
     lowercase: true,

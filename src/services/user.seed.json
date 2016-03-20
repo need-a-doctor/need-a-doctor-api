@@ -23,5 +23,18 @@
     "role" : "clinic-admin",
     "email" : "dimanter@gmail.com",
     "sex" : "male"
+  },
+  {
+    "_id" : "56ed2f8fa49989ea363263d1",
+    "isEmailVerified" : false,
+    "verifyEmailHash" : "030748b55eeda334a48c230a562d3048",
+    "provider" : "local",
+    "name" : "Alexander",
+    "hashedPassword" : "KyKnfrKaebm2cT0qWujEF7e+8BKEeJhDxbTUXJj6fDXuIXpNw1rnmLiFh/qyKe58Q3mfKWcOHjAdzXfNzuMj1g==",
+    "salt" : "ydmwwRarO6PsAaVn88boHw==",
+    "createdAt" : "2016-03-19T10:53:03.114+0000",
+    "role" : "clinic-admin",
+    "email" : "dimanter@gmail.com",
+    "sex" : "male"
   }
 ]

@@ -9,19 +9,25 @@ var Schema = mongoose.Schema;
 
 
 var ReceptionSchema = new Schema({
-  time: Date,
+  time: {
+    type: Date,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
   user: {
-    type: Schema.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  //schedule: {
-  //  type: Schema.ObjectId,
-  //  ref: 'Schedule',
-  //  required: true
-  //},
+  schedule: {
+    type: Schema.Types.ObjectId,
+    ref: 'Schedule'
+  },
   doctor: {
-    type: Schema.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Doctor',
     required: true
   },
@@ -30,5 +36,7 @@ var ReceptionSchema = new Schema({
     default: Date.now
   }
 });
+ReceptionSchema.index({doctor: 1});
+ReceptionSchema.index({user: 1});
 
 module.exports = mongoose.model('Reception', ReceptionSchema);

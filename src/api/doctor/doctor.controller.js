@@ -218,19 +218,23 @@ function _getResponceForDoctorSchedule (req, res, doctors) {
 
 function _createReceptionsForDoctor (doctor, date) {
   var receptions = [];
+  //for (var i = 0; i<doctor.receptions.length; i++){
+  //  doctor.receptions   [i].isBusy=_.random(3) > 2;
+  //}
   for (var i = 9; i <= 18; i += 2) {
     var startTime = moment(date);
     startTime.hour(i);
     startTime.minute(0);
     startTime.millisecond(0);
-    var reception = _.find(doctor.receptions, function () { // eslint-disable-line no-loop-func
-      //return moment(o.date).isSame(startTime.toDate());
-      return _.random(0, 3) > 2;
-    });
 
-    if (reception) {
+    //var reception = _.each(doctor.receptions, function () { // eslint-disable-line no-loop-func
+    //  //return moment(o.date).isSame(startTime.toDate());
+    //  return _.random(3) > 2;
+    //});
+
+    if (_.random(3) > 2) {
       receptions.push({
-        _id: reception._id,
+        _id: '',
         time: startTime.toDate(),
         isBusy: true,
         isCurrentUser: false //req.user._id == reception.user

@@ -10,7 +10,8 @@ var controller = {
   detail: detail,
   getBySpecialization: getBySpecialization,
   getByClinic: getByClinic,
-  getGroupedByDate: getGroupedByDate
+  getGroupedByDate: getGroupedByDate,
+  getDoctorGroupedByDate: getDoctorGroupedByDate
 };
 
 module.exports = controller;
@@ -129,52 +130,51 @@ function getByClinic (req, res) {
 }
 
 function getGroupedByDate (req, res) {
-  var startDate = new Date();
-  var endDate = new Date();
-  endDate.setTime(startDate.getTime() + 10 * 1000 * 60 * 60 * 24);
-
-  /*var response = [{
-    date:"2016-03-20T12:34:06.603Z",//date without time
-    //doctor
-    doctors: {
-      name:"", //string
-      specializations:[""],
-      clinics:{
-         name: String,
-         address: String
-      },
-      receptions:[{
-        time:"",//datetime
-        isBusy:"", //boolean
-        isCurrentUser:"" //boolean
-      }]
-    }
-  }];*/
-
   Doctor
     .find()
     .sort({name: 1})
     .populate('clinic')
     .populate('specializations')
     .populate('receptions')
-    .populate('receptions')
-    .populate({
-      path: 'receptions',
-      match: {
-          date: {
-            '$gte': startDate,
-            '$lt': endDate
-          }
-        }
-    })
+    //.populate({
+    //  path: 'receptions',
+    //  match: {
+    //      date: {
+    //        '$gte': startDate,
+    //        '$lt': endDate
+    //      }
+    //    }
+    //})
     .lean()
     .then(function (doctors) {
-      var response = [];
+      _getResponceForDoctorSchedule(req, res, doctors);
+    })
+    .catch(function (err) {
+      Logger.error('DoctorController::getGroupedByDate() - get list failed', {
+        error: err
+      });
+      res.status(500).send();
+    });
+}
 
+function getDoctorGroupedByDate (req, res) {
+  var startDate = new Date();
+  var endDate = new Date();
+  endDate.setTime(startDate.getTime() + 10 * 1000 * 60 * 60 * 24);
+  Doctor
+    .findOne({
+      _id: req.params.id
+    })
+    .populate('clinic')
+    .populate('specializations')
+    .populate('receptions')
+    .lean()
+    .then(function (doctor) {
+      var response = [];
       for (var d = new Date(startDate.getTime()); d <= endDate; d.setTime(d.getTime() + 1000 * 60 * 60 * 24)) {
         var entity = {
-          date: startDate,
-          doctors: _getFilteredDoctor(req, doctors)
+          date: d,
+          doctor: _createReceptionsForDoctor(doctor, d)
         };
         response.push(entity);
       }
@@ -186,39 +186,60 @@ function getGroupedByDate (req, res) {
       });
       res.status(500).send();
     });
-
 }
 
-function _getFilteredDoctor(req, doctors) {
-
+function _getFilteredDoctor (doctors, date) {
   return _(doctors)
-    .forEach(function(doctor) {
-
-      var receptions = [];
-      for (var i = 9 ; i <= 18; i = i + 2) {
-
-        var startTime = moment(i + ':00', 'HH:mm');
-        var endTime = moment(i + 2 + ':00', 'HH:mm');
-        var reception = _.find(doctor.receptions, function(o) {
-          return moment(o.time, 'HH:mm').isBetween(startTime, endTime);
-        });
-
-        if (reception && reception.length() > 0) {
-          receptions.push({
-            _id: reception._id,
-            time: startTime,
-            isBusy: true,
-            isCurrentUser: req.user._id == reception.user
-          });
-        } else {
-          receptions.push({
-            time: startTime,
-            isBusy: false,
-            isCurrentUser: false
-          });
-        }
-      }
-      doctor.receptions = receptions;
+    .forEach(function (doctor) {
+      _createReceptionsForDoctor(doctor, date);
     })
-    .value()
+    .value();
+}
+
+function _getResponceForDoctorSchedule (req, res, doctors) {
+  var startDate = new Date();
+  var endDate = new Date();
+  endDate.setTime(startDate.getTime() + 10 * 1000 * 60 * 60 * 24);
+
+  var response = [];
+
+  for (var d = new Date(startDate.getTime()); d <= endDate; d.setTime(d.getTime() + 1000 * 60 * 60 * 24)) {
+    var entity = {
+      date: startDate,
+      doctors: _getFilteredDoctor(req, doctors, d)
+    };
+    response.push(entity);
+  }
+  res.json(response);
+}
+
+function _createReceptionsForDoctor (doctor, date) {
+  var receptions = [];
+  for (var i = 9; i <= 18; i += 2) {
+    var startTime = moment(date);
+    startTime.hour(i);
+    startTime.minute(0);
+    startTime.millisecond(0);
+    var reception = _.find(doctor.receptions, function () {
+      //return moment(o.date).isSame(startTime.toDate());
+      return false;
+    });
+
+    if (reception && reception.length() > 0) {
+      //receptions.push({
+      //  _id: reception._id,
+      //  time: startTime,
+      //  isBusy: true,
+      //  isCurrentUser: req.user._id == reception.user
+      //});
+    } else {
+      receptions.push({
+        time: startTime,
+        isBusy: false,
+        isCurrentUser: false
+      });
+    }
+  }
+  doctor.receptions = receptions;
+  return doctor;
 }

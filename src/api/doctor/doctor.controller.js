@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+//var __ = require('underscore');
 var Logger = require('../../services/logger.service');
 var Doctor = require('./doctor.model');
 var moment = require('moment');
@@ -174,7 +175,7 @@ function getDoctorGroupedByDate (req, res) {
       for (var d = new Date(startDate.getTime()); d <= endDate; d.setTime(d.getTime() + 1000 * 60 * 60 * 24)) {
         var entity = {
           date: d,
-          doctor: _createReceptionsForDoctor(doctor, d)
+          doctor: _createReceptionsForDoctor(doctor, d, req)
         };
         response.push(entity);
       }
@@ -188,10 +189,10 @@ function getDoctorGroupedByDate (req, res) {
     });
 }
 
-function _getFilteredDoctor (doctors, date) {
+function _getFilteredDoctor (doctors, date, req) {
   return _(doctors)
     .forEach(function (doctor) {
-      _createReceptionsForDoctor(doctor, date);
+      _createReceptionsForDoctor(doctor, date, req);
     })
     .value();
 }
@@ -203,10 +204,12 @@ function _getResponceForDoctorSchedule (req, res, doctors) {
 
   var response = [];
 
-  for (var d = new Date(startDate.getTime()); d <= endDate; d.setTime(d.getTime() + 1000 * 60 * 60 * 24)) {
+  for (var i = 0; i < 10; i++) {
+    var d = new Date(startDate.getTime());
+    d.setTime(d.getTime() + i * 1000 * 60 * 60 * 24);
     var entity = {
       date: d,
-      doctors: _getFilteredDoctor(doctors, d)
+      doctors: _getFilteredDoctor(doctors, d, req)
     };
     response.push(entity);
   }
@@ -220,26 +223,28 @@ function _createReceptionsForDoctor (doctor, date) {
     startTime.hour(i);
     startTime.minute(0);
     startTime.millisecond(0);
-    var reception = _.find(doctor.receptions, function () {
+    var reception = _.find(doctor.receptions, function () { // eslint-disable-line no-loop-func
       //return moment(o.date).isSame(startTime.toDate());
-      return false;
+      return _.random(0, 3) > 2;
     });
 
-    if (reception && reception.length() > 0) {
-      //receptions.push({
-      //  _id: reception._id,
-      //  time: startTime,
-      //  isBusy: true,
-      //  isCurrentUser: req.user._id == reception.user
-      //});
+    if (reception) {
+      receptions.push({
+        _id: reception._id,
+        time: startTime.toDate(),
+        isBusy: true,
+        isCurrentUser: false //req.user._id == reception.user
+      });
     } else {
       receptions.push({
+        _id: '',
         time: startTime.toDate(),
         isBusy: false,
         isCurrentUser: false
       });
     }
   }
+  //var doctorClone = __.clone(doctor);
   doctor.receptions = receptions;
   return doctor;
 }

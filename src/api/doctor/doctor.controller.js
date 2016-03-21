@@ -232,7 +232,7 @@ function _createReceptionsForDoctor (doctor, date) {
     //  return _.random(3) > 2;
     //});
 
-    if (_.random(3) > 2) {
+    if (_.random(4) > 2) {
       receptions.push({
         _id: '',
         time: startTime.toDate(),

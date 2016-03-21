@@ -9,6 +9,7 @@ var authService = require('../../auth/auth.service');
 var Logger = require('../../services/logger.service');
 
 var Clinic = require('../clinic/clinic.model');
+var Doctor = require('../doctor/doctor.model');
 var User = require('./user.model');
 
 var controller = {
@@ -20,6 +21,7 @@ var controller = {
   getClinic: getClinic,
   updateClinic: updateClinic,
   getDoctors: getDoctors,
+  createDoctor: createDoctor,
   getDoctor: getDoctor,
   updateDoctor: updateDoctor,
   deleteDoctor: deleteDoctor
@@ -238,21 +240,44 @@ function updateClinic (req, res) {
     });
 }
 
-
 /**
  * @function - Get clinic-admin's clinic
  * @memberof UserSchema
  */
-function getDoctors (/*req, res*/) {
-  //Clinic
-  //  .findOne({admin: req.user._id})
-  //  .lean()
-  //  .then(function (clinic) {
-  //    res.json(clinic);
-  //  })
-  //  .catch(function (err) {
-  //    handleError(res, err);
-  //  });
+function getDoctors (req, res) {
+  Clinic
+    .findOne({admin: req.user._id})
+    .then(function (clinic) {
+      Doctor
+        .find({clinic: clinic._id})
+        .lean()
+        .then(function (doctors) {
+          res.json(doctors);
+        })
+        .catch(function (err) {
+          handleError(res, err);
+        });
+    });
+}
+
+function createDoctor (req, res) {
+  Clinic
+    .findOne({admin: req.user._id})
+    .then(function (clinic) {
+      var params = _.merge(req.body, {clinic: clinic._id});
+      var doctor = new Doctor(params);
+      doctor.save(function (err, savedDoctor) {
+        Logger.error('UserController::createDoctor() - save doctor failed',
+          {
+            error: err,
+            doctor: doctor
+          });
+        res.status(201).json(savedDoctor);
+      });
+    })
+    .catch(function (err) {
+      handleError(res, err);
+    });
 }
 
 /**
@@ -275,30 +300,36 @@ function getDoctor (/*req, res*/) {
  * @function - Update clinic-admin's clinic
  * @memberof UserSchema
  */
-function updateDoctor (/*req, res*/) {
-  //Clinic
-  //  .findOne({admin: req.user._id})
-  //  .then(function (clinic) {
-  //    // We can't allow to set "admin" field for example
-  //    var allowedToEditFields = {
-  //      name: req.body.name, //TODO: set clinic's fields
-  //      email: req.body.email,
-  //      sex: req.body.sex
-  //    };
-  //    _.merge(clinic, allowedToEditFields);
-  //    clinic.save(function (err, savedClinic) {
-  //      if (err) {
-  //        if (err.name === 'ValidationError') {
-  //          return res.status(400).send(err);
-  //        }
-  //        return handleError(res, err);
-  //      }
-  //      res.status(200).json(savedClinic);
-  //    });
-  //  })
-  //  .catch(function (err) {
-  //    handleError(res, err);
-  //  });
+function updateDoctor (req, res) {
+  Doctor
+    .findOne({_id: req.params.id})
+    .then(function (doctor) {
+      doctor.name = req.body.name;
+      doctor.specializations = req.body.specializations;
+      doctor.receptions = req.body.receptions;
+      doctor.save(function (err, savedDoctor) {
+        if (err) {
+          Logger.error('UserController::updateDoctor() - update doctor failed',
+            {
+              error: err,
+              doctor: doctor,
+              reqBody: req.body
+            });
+          if (err.name === 'ValidationError') {
+            return res.status(400).send(err);
+          }
+          return handleError(res, err);
+        }
+        res.status(200).json(savedDoctor);
+      });
+    })
+    .catch(function (err) {
+      Logger.error('UserController::updateDoctor() - find doctor failed',
+        {
+          error: err
+        });
+      handleError(res, err);
+    });
 }
 
 /**
@@ -307,37 +338,33 @@ function updateDoctor (/*req, res*/) {
  * @arg {Number} req.id - the id of the WorkerResponse
  * @returns nothing
  */
-function deleteDoctor (/*req, res*/) {
-  //Task
-  //  .findOne({'workerResponses._id': req.params.id})
-  //  .then(function (task) {
-  //    if (!task) {
-  //      return res.status(404);
-  //    }
-  //
-  //    var workerResponse = task.workerResponses.id(req.params.id);
-  //
-  //    if ((req.user.role !== 'admin') &&
-  //      !req.user._id.equals(workerResponse.worker)) {
-  //      return res.status(403).send('Not authorised');
-  //    }
-  //    if (workerResponse.completedAt) {
-  //      return res.status(400).send('answers already submitted');
-  //    }
-  //
-  //    workerResponse.remove();
-  //    task
-  //      .save()
-  //      .then(function () {
-  //        res.status(204).send('No Content');
-  //      })
-  //      .catch(function (err) {
-  //        res.status(400).send(err);
-  //      });
-  //  })
-  //  .catch(function (err) {
-  //    handleError(res, err);
-  //  });
+function deleteDoctor (req, res) {
+  Doctor
+    .findOne({_id: req.params.id})
+    .then(function (doctor) {
+      doctor.remove(function (err) {
+        if (err) {
+          Logger.error('UserController::deleteDoctor() - delete doctor failed',
+            {
+              error: err,
+              doctor: doctor
+            });
+          if (err.name === 'ValidationError') {
+            return res.status(400).send(err);
+          }
+          return handleError(res, err);
+        }
+        res.status(204).send();
+      });
+    })
+    .catch(function (err) {
+      Logger.error('UserController::deleteDoctor() - find doctor failed',
+        {
+          error: err,
+          params: req.params
+        });
+      handleError(res, err);
+    });
 }
 
 function handleError (res, err) {

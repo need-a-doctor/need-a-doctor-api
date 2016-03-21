@@ -1,28 +1,28 @@
 [
   {
     "_id" : "56ee8500b9f778472766d39b",
-    "name": "Иванов Иван Иванович",
+    "name": "Кривошеев Г.В.",
     "clinic": "56ed28562ff662e835f65661",
     "specializations": ["56ed4e339eae7afa3b6987f5"],
     "receptions": ["56ee85eeb9f778472766d3a1", "56ed2f8fa49989ea363263de"]
   },
   {
-    "name": "Петров Петр Петрович",
+    "name": "Котов Г.С.",
     "clinic": "56ed28562ff662e835f65661",
     "specializations": ["56ed4e339eae7afa3b6987f6", "56ed4e339eae7afa3b6987f7"]
   },
   {
-    "name": "Сидоров Владимир Михайлович",
+    "name": "Чекистов Д.С.",
     "clinic": "56ed28562ff662e835f65661",
     "specializations": ["56ed4e339eae7afa3b6987f7"]
   },
   {
-    "name": "Пушкин Александр Сергеевич",
+    "name": "Васильев И.А.",
     "clinic": "56ed2f8fa49989ea363263df",
     "specializations": ["56ed4e339eae7afa3b6987f8"]
   },
   {
-    "name": "Пасмурнов Сергей Михайлович",
+    "name": "Лапшин В.В.",
     "clinic": "56ed2f8fa49989ea363263df",
     "specializations": ["56ed4e339eae7afa3b6987f9"]
   }

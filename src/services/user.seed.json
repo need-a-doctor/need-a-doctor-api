@@ -1,5 +1,17 @@
 [
   {
+    "_id" : "56ed24727552735635062497",
+    "isEmailVerified" : false,
+    "verifyEmailHash" : "efe3d30664352577987167faad7b3aa0",
+    "provider" : "local",
+    "name" : "Ирина Хладная",
+    "hashedPassword" : "EgeRqlChOcVlTAGSV4Tr0Dj94iEsZ0U3XBA3phe4wy0Ew0fKYzNvxjhz2PnQ88BDxnOuni+j94unbiUN3TxsBA==",
+    "salt" : "cobmWB1KZNHPElsT7gFHxw==",
+    "createdAt" : "2016-03-19T10:05:38.146+0000",
+    "role" : "clinic-admin",
+    "email" : "q@q.qq"
+  },
+  {
     "_id" : "56ed24727552735635062496",
     "isEmailVerified" : false,
     "verifyEmailHash" : "efe3d30664352577987167faad7b3aa0",

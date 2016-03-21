@@ -7,9 +7,9 @@ module.exports = {
     uri: 'mongodb://localhost/need-a-doctor-dev'
   },
   frontend: {
-    url: 'http://50.112.191.195/'
+    url: 'http://52.38.21.188/'
   },
   backend: {
-    url: 'http://50.112.191.195:9000/'
+    url: 'http://52.38.21.188:9000/'
   }
 };
